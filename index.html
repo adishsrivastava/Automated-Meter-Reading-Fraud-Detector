@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project 40: Smart Meter OCR & Fraud Detector | CSAI3027P</title>
+  <title>Automated Meter Reading (AMR) & Utility Fraud Detector</title>
   <style>
     * {
       box-sizing: border-box;
@@ -298,8 +298,9 @@
 
   <header>
     <div>
-      <h1>CSAI3027P Project 40: Automated Meter Reading &amp; Utility Fraud Detector</h1>
-      <div class="sub">Multimodal Deep Learning: ResNet-34 OCR + YOLOv8 Tamper + 24h LSTM-VAE + Nesterov MLP</div>
+      <h1>Automated Meter Reading (AMR) &amp; Utility Fraud Detector</h1>
+      <div class="sub">Multimodal Deep Learning: ResNet-34 OCR + YOLOv8 Tamper Detection + 24h LSTM-VAE + Nesterov MLP
+      </div>
     </div>
     <div style="font-family:Consolas,monospace; font-size:12px; text-align:right;">
       <div>TEST ACCURACY: <b style="color:#4ade80;">97.73%</b> | FRAUD F1: <b>0.943</b></div>
@@ -379,45 +380,45 @@
     </div>
 
     <details>
-      <summary>🎓 View Full CSAI3027P Syllabus Benchmarks &amp; Mathematical Evidence (Units I–V)</summary>
+      <summary>📊 View Full Architecture Benchmarks &amp; Mathematical Verification</summary>
       <table>
         <tr>
-          <th>Unit</th>
-          <th>Implemented Models &amp; Math</th>
+          <th>Architecture Module</th>
+          <th>Implemented Models &amp; Mathematical Components</th>
           <th>Dataset</th>
           <th>Accuracy / Metric</th>
           <th>Verification</th>
         </tr>
         <tr>
-          <td><b>Unit I</b></td>
+          <td><b>Optimization &amp; SVD</b></td>
           <td>McCulloch-Pitts, Sigmoid MLP, GD, SGD, Momentum, <b>Nesterov (NAG)</b>, SVD</td>
           <td>Cleaned Smart-Grid CSV (500 meters)</td>
           <td>NAG Loss: <b>0.0189</b> | SVD Top 5 = <b>97.8% var</b></td>
           <td>0.4 ms</td>
         </tr>
         <tr>
-          <td><b>Unit II</b></td>
+          <td><b>Tensor Operations</b></td>
           <td>Tensor Reshape, Broadcasting, Inner Products, <b>Numerical Grad Check</b></td>
           <td>24x64 Load Tensor</td>
           <td>Rel Grad Error: <b>7.17e-10 &lt; 1e-7</b></td>
           <td>PASSED</td>
         </tr>
         <tr>
-          <td><b>Unit III</b></td>
+          <td><b>Learning &amp; Reg</b></td>
           <td>Oja Hebbian, Competitive WTA, Boltzmann RBM (CD-1), BatchNorm + Dropout</td>
           <td>UFPR-AMR + Load Profiles</td>
           <td>Val Acc: <b>96.1%</b> (Overfit Gap: <b>0.8%</b>)</td>
           <td>RBM MSE: 0.024</td>
         </tr>
         <tr>
-          <td><b>Unit IV</b></td>
+          <td><b>Computer Vision</b></td>
           <td>2D Conv, <b>U-Net Glare Seg</b>, <b>YOLOv8-Nano</b>, Faster R-CNN, RetinaNet, <b>ResNet-34</b></td>
           <td>UFPR-AMR (10,000 imgs)</td>
           <td>YOLOv8: <b>95.9% mAP</b> | ResNet OCR: <b>98.4% Acc</b></td>
           <td>12.5 ms</td>
         </tr>
         <tr>
-          <td><b>Unit V</b></td>
+          <td><b>Sequence &amp; Gen</b></td>
           <td>Step/Sigmoid/Tanh, <b>2-Layer Deep LSTM</b>, <b>Variational Autoencoder (VAE)</b></td>
           <td>SGCC Theft &amp; UCI 24h Load</td>
           <td><b>Fraud F1: 0.943</b> | <b>ROC-AUC: 96.7%</b></td>
