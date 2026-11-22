@@ -3,8 +3,6 @@
 # ⚡ Automated Meter Reading (AMR) & Utility Fraud Detector
 ### Multimodal Deep Learning for Smart-Grid Optical Character Recognition & Non-Technical Loss Detection
 
-[![Course](https://img.shields.io/badge/Course-CSAI3027P_Deep_Learning-2563eb?style=for-the-badge)](https://github.com/adishsrivastava/Automated-Meter-Reading-Fraud-Detector-)
-[![Project](https://img.shields.io/badge/Project_40-Utility_Analytics-0f172a?style=for-the-badge)](https://github.com/adishsrivastava/Automated-Meter-Reading-Fraud-Detector-)
 [![C++17](https://img.shields.io/badge/C++17-LibTorch_%26_Eigen3-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)](https://pytorch.org/cppdocs/)
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel_Interactive_AI-16a34a?style=for-the-badge&logo=vercel&logoColor=white)](https://amr-fraud-detector-phi.vercel.app)
 
