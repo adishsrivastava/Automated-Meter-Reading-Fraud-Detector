@@ -1,76 +1,76 @@
-﻿# Automated Meter Reading (AMR) & Utility Fraud Detector
-**Course:** `CSAI3027P Deep Learning` | **Project ID:** `Project 40` | **Domain:** `Utility Analytics`  
-**Stack:** `Vercel Interactive Web App (HTML5/JS)` + `Native C++17 / LibTorch / Eigen3` + `CMake`
+﻿<div align="center">
+
+# ⚡ Automated Meter Reading (AMR) & Utility Fraud Detector
+### Multimodal Deep Learning for Smart-Grid Optical Character Recognition & Non-Technical Loss Detection
+
+[![Course](https://img.shields.io/badge/Course-CSAI3027P_Deep_Learning-2563eb?style=for-the-badge)](https://github.com/adishsrivastava/Automated-Meter-Reading-Fraud-Detector-)
+[![Project](https://img.shields.io/badge/Project_40-Utility_Analytics-0f172a?style=for-the-badge)](https://github.com/adishsrivastava/Automated-Meter-Reading-Fraud-Detector-)
+[![C++17](https://img.shields.io/badge/C++17-LibTorch_%26_Eigen3-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)](https://pytorch.org/cppdocs/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel_Interactive_AI-16a34a?style=for-the-badge&logo=vercel&logoColor=white)](https://amr-fraud-detector-phi.vercel.app)
+
+**Test Set Accuracy:** `97.73%` &nbsp;|&nbsp; **Exact 7-Digit OCR:** `98.40%` &nbsp;|&nbsp; **Fraud F1-Score:** `0.943` &nbsp;|&nbsp; **Edge Latency:** `14.2 ms`
+
+</div>
 
 ---
 
-## 1. Plain-English Explanation (What This Project Actually Does)
+## 💡 1. Plain-English Overview (How the System Works)
 
-Imagine an electricity utility company sends an inspector (or uses a smart camera) to check a household electricity meter. People who steal electricity typically do **two things**:
-1. **Physical Tampering (The Camera Problem):** They place a strong neodymium magnet on the meter casing to slow down the internal sensing coils, or they break the security seal to bypass the phase wire.
-2. **Consumption Drops (The Math/Graph Problem):** Their hourly electricity usage curve suddenly flatlines or drops by 70%+ during peak evening hours (`17:00 – 22:00`) when neighboring homes have their appliances and air conditioning running.
+Electric and water utilities lose over **$89 billion annually** worldwide to **Non-Technical Losses (NTL)**—primarily electricity theft and billing transcription errors. In the real world, utility fraud happens in **two ways**:
 
-Our project catches both automatically using a **Dual-Branch Multimodal Deep Learning System**:
+1. **Physical Meter Tampering (The Vision Problem):** Dishonest consumers attach high-strength **neodymium magnets** to the meter casing to saturate internal current transformers, or **break the terminal security seal** to attach a phase-bypass wire. Meanwhile, field cameras struggle with **specular flashlight/solar glare** on glass meter covers.
+2. **Consumption Anomalies (The Time-Series Problem):** Even if a meter looks normal from the outside, an illegal wire shunt causes the household's **24-hour electricity load curve** to suddenly flatline or drop by `70%+` during peak evening hours (`17:00 – 22:00`) when neighboring homes have air conditioning and appliances running.
+
+Our project solves both problems simultaneously using a **Dual-Branch Multimodal Deep Learning Architecture**:
 
 | System Branch | Plain-English Role | Deep Learning Models Used |
 | :--- | :--- | :--- |
-| **Branch 1: The "Eyes"** *(Computer Vision - Unit IV)* | Takes a photo of the meter $\rightarrow$ locates the green LCD screen, security seal, and any external magnet $\rightarrow$ masks out flashlight glare $\rightarrow$ reads the 7 digits (`04829.6 kWh`). | **YOLOv8-Nano / Faster R-CNN / RetinaNet** (ROI & Tamper Detection), **U-Net** (Specular Glare Semantic Segmentation), **ResNet-34 / GoogLeNet** (7-Digit OCR Classification). |
-| **Branch 2: The "Brain"** *(Sequence & Generative - Unit V)* | Analyzes the 24 hourly electricity values (`Hour 00` to `Hour 23`) $\rightarrow$ forecasts expected load $\rightarrow$ measures latent-space reconstruction error ($\tau = 0.085$) to catch flatlines or wire bypasses. | **2-Layer Deep LSTM** (Sequential Forecasting), **Variational Autoencoder (VAE)** (2D Latent Space $z_1, z_2$ Anomaly Detector), and **Sigmoid MLP + McCulloch-Pitts Gate** (Late-Fusion Classifier). |
+| **👁️ Branch 1: "The Eyes"**<br>*(Computer Vision — Unit IV)* | Inspects the meter image $\rightarrow$ localizes the LCD screen, terminal seal, and external magnets $\rightarrow$ strips away surface glare $\rightarrow$ reads the 7-digit kWh counter (`04829.6 kWh`). | **YOLOv8-Nano / Faster R-CNN / RetinaNet** (ROI & Tamper Detection)<br>**U-Net** (Specular Glare Semantic Segmentation)<br>**ResNet-34 / GoogLeNet** (7-Digit OCR Classification) |
+| **🧠 Branch 2: "The Brain"**<br>*(Sequence & Generative — Unit V)* | Analyzes the 24 hourly electricity values (`Hour 00` to `Hour 23`) $\rightarrow$ forecasts expected household demand $\rightarrow$ projects the load curve into a 2D latent space ($z_1, z_2$) to catch flatlines and wire bypasses. | **2-Layer Deep LSTM** (24h Sequential Forecasting)<br>**Variational Autoencoder (VAE)** (Latent Anomaly Detector, $\tau = 0.085$)<br>**Nesterov MLP + McCulloch-Pitts Gate** (Late-Fusion Fraud Classifier) |
 
 ---
 
-## 2. How to Use the Live Interactive Demo (For Professor / Viva Evaluation)
+## 🖥️ 2. Live Interactive AI Workbench (Vercel Demo)
 
-1. **Quick Preset Buttons:** Click **Normal Home**, **Magnet Tamper**, **Wire Bypass**, or **Solar Glare** to auto-populate the inputs and watch the AI verdict, confidence score, and graphs update immediately.
-2. **Switch Deep Learning Architectures Live:** Switch between **YOLOv8-Nano**, **Faster R-CNN**, and **RetinaNet**, or toggle between **ResNet-34** and **GoogLeNet** to compare real-time **mAP@0.5**, **OCR Accuracy**, **Fraud F1-Score**, and **Inference Latency (ms)**.
-3. **2D Convolution & U-Net Filter View:** Switch the meter view between **Raw RGB**, **2D Sobel Edge Kernel ($3\times3$)**, and **U-Net Glare Segmentation Mask**.
-4. **Custom Inputs & CSV Upload:** Type any 7-digit reading, toggle the Magnet/Seal/Glare checkboxes, drag the **Evening Peak Load slider**, or upload **`data/test_cleaned.csv`** to test any of the 75 held-out test households live.
+🔗 **Live Deployment:** **[https://amr-fraud-detector-phi.vercel.app](https://amr-fraud-detector-phi.vercel.app)**
 
----
-
-## 3. Datasets Used, Provenance & Leakage-Safe Preparation (`data/` Folder)
-
-### Official Benchmark Sources & Links
-| Dataset Name | Modality & Volume | Official Link | Role in Project 40 |
-| :--- | :--- | :--- | :--- |
-| **1. UFPR-AMR Dataset** | **Vision (RGB Images)**<br>`2,000` high-res images (`10,000` annotated digits) | [VRI-UFPR Official Portal](https://web.inf.ufpr.br/vri/databases/ufpr-amr-dataset/) \| [GitHub Repo](https://github.com/raysonlaroca/ufpr-amr-dataset) | Training & benchmarking **YOLOv8 / Faster R-CNN** LCD localization and **ResNet-34** 7-digit OCR. |
-| **2. Roboflow Meter-OCR & Kaggle Water/Energy Meters** | **Vision + Glare Masks**<br>`8,000+` augmented images + polygon masks | [Roboflow Universe Meter OCR](https://universe.roboflow.com/search?q=electric%20meter%20ocr) \| [Kaggle Meter Masks](https://www.kaggle.com/datasets/tapakah68/yandextoloka-water-meters-dataset) | Training the **U-Net Semantic Segmentation** mask for specular flashlight glare removal. |
-| **3. SGCC Electricity Theft Dataset** | **Time-Series (Fraud Labels)**<br>`42,372` customers $\times$ `1,035` days | [SGCC GitHub Mirror](https://github.com/henryRDlab/ElectricityTheftDetection) \| [Kaggle SGCC](https://www.kaggle.com/datasets/bensalem14/sgcc-dataset) | Ground-truth Non-Technical Loss (`FLAG = 0/1`) labels for **LSTM-VAE** fraud training. |
-| **4. UCI / London Smart-Meter Load Profiles** | **Time-Series (Hourly kWh)**<br>`5,000+` households (`2M+` rows) | [UCI Repository #235](https://archive.ics.uci.edu/dataset/235/individual+household+electric+power+consumption) \| [London Datastore](https://data.london.gov.uk/dataset/smartmeter-energy-use-data-in-london-households) | Diurnal 24-hour baseline load profiles and **Eigen SVD** rank compression diagnostics. |
-
-### Cleaned & Prepared Dataset Files Included in Repository (`data/`)
-To prevent time-series data leakage, households are partitioned strictly by **`household_meter_id`** (`Seed = 42`) so the same meter never appears in both training and testing:
-* **`data/train_cleaned.csv`** (`350 households` — **70% Training Split**)
-* **`data/val_cleaned.csv`** (`75 households` — **15% Validation Split**)
-* **`data/test_cleaned.csv`** (`75 households` — **15% Held-Out Test Split**)
+The web workbench is designed for **live interactive evaluation** during project demonstrations:
+* **4 Instant Preset Scenarios:** Toggle between **1. Normal Home**, **2. Magnet Tamper**, **3. Wire Bypass**, and **4. Surface Glare**—or customize any parameter manually.
+* **Custom Inputs & Real CSV Upload:** Type any 7-digit meter reading, toggle physical tamper artifacts, drag the **Evening Peak Load slider (`0.10 – 3.80 kWh`)**, or upload **`data/test_cleaned.csv`** to test any of the 75 held-out households.
+* **On-Demand 4-Stage Neural Execution:** Clicking **`▶ Run Live AI Analysis`** executes the 4-stage pipeline in real time:
+  1. **Stage 1 (`YOLOv8-Nano`):** Computes physical tamper probability and bounding-box detection (`95.9% mAP@0.5`).
+  2. **Stage 2 (`U-Net + ResNet-34 OCR`):**Applies glare masking (`91.2% mIoU`) and decodes the 7-digit reading (`98.4% Exact Match`).
+  3. **Stage 3 (`2-Layer LSTM + VAE`):** Runs a 24-timestep recurrent cell loop and computes the VAE reconstruction error ($\text{MSE}$ vs. threshold $\tau = 0.085$) and latent coordinates $z = [z_1, z_2]$.
+  4. **Stage 4 (`40-Epoch Nesterov MLP`):** Executes 40 live epochs of backpropagation with Nesterov Accelerated Gradient (NAG), plots the Binary Cross-Entropy loss curve, verifies the finite-difference numerical gradient check ($\text{Rel Error} = 7.17 \times 10^{-10} < 10^{-7}$), and outputs the final **Fraud Probability** and **AI Prediction Accuracy**.
 
 ---
 
-## 4. Complete Model Benchmarks, Accuracy & Evaluation Scores
+## 🏗️ 3. End-to-End System Architecture
 
-### A. Multi-Architecture Benchmark Suite (Test Set: $N = 1,500$ Inspections)
-| Model Architecture | Syllabus Unit | Task Role | Primary Accuracy / Metric | Fraud F1-Score | Latency (ms) | Deployment Verdict |
-| :--- | :---: | :--- | :---: | :---: | :---: | :--- |
-| **YOLOv8-Nano** | Unit IV | Real-Time LCD, Seal & Magnet Detection | **95.9% mAP@0.5** | 0.931 | **8.4 ms** | **Selected (Edge)** |
-| **Faster R-CNN (ResNet-50)** | Unit IV | Two-Stage Region Proposal Detection | **96.8% mAP@0.5** | 0.938 | 48.5 ms | Cloud Server Reference |
-| **RetinaNet (Focal Loss)** | Unit IV | Rare Broken-Seal Detection ($\gamma=2.0$) | **96.2% mAP@0.5** | **0.944** | 29.1 ms | High-Imbalance Baseline |
-| **U-Net (2D Conv)** | Unit IV | Specular Glare Semantic Segmentation | **91.2% mIoU** | — | 2.9 ms | **Selected (Pre-OCR)** |
-| **ResNet-34** | Unit IV | 7-Digit Exact Meter Reading OCR | **98.4% Exact Acc** | — | **4.1 ms** | **Selected (OCR)** |
-| **GoogLeNet (Inception-v1)** | Unit IV | Multi-Scale Digit Classification | 97.1% Exact Acc | — | 3.8 ms | Lightweight OCR Baseline |
-| **2-Layer LSTM + VAE Hybrid** | Unit V | 24h Load Profile Anomaly & Fraud | **96.7% ROC-AUC** | **0.943** | **1.7 ms** | **Selected (Anomaly)** |
-
-* **End-to-End Combined Pipeline Latency:** **`14.2 ms`** per inspection (3.5× faster than the `50.0 ms` utility edge gateway SLA).
-
-### B. Confusion Matrix (Combined Multimodal Fraud Detector on $N = 1,500$ Test Inspections)
-| Actual \ Predicted | Predicted: Normal (Clean) | Predicted: Utility Fraud / Tamper | Row Total & Sensitivity |
-| :--- | :---: | :---: | :---: |
-| **Actual: Normal ($1,200$)** | **1,184 (True Negative)** | 16 (False Positive) | **98.67% Specificity** |
-| **Actual: Fraud ($300$)** | 18 (False Negative) | **282 (True Positive)** | **94.00% Recall (Sensitivity)** |
-| **Overall Summary** | **Precision: 94.63%** | **Fraud F1-Score: 0.943** | **Overall Accuracy: 97.73%** |
-
-### C. Unit I & III Optimizer & Regularization Ablation Study
-| Optimizer / Regularization Setup | Final BCE Loss | Epochs to $< 0.05$ Loss | Train Acc | Val Acc | Overfitting Gap |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Batch Gradient Descent (GD)** | 0.1421 | 94 Epochs | 94.2% | 89.1% | 5.1% |
-| **Mini-Batch SGD** | 0.0894 | 71 Epochs | 95.8% | 91.4% | 4.4% |
-| **
+```text
+                  ┌────────────────────────────────────────────────────────┐
+                  │      Smart Meter Inspection Frame + 24h kWh Stream     │
+                  └───────────────────────────┬────────────────────────────┘
+                                              │
+                     ┌────────────────────────┴────────────────────────┐
+                     ▼                                                 ▼
+     ┌───────────────────────────────┐                 ┌───────────────────────────────┐
+     │   VISION BRANCH (UNIT IV)     │                 │ SEQUENCE & GEN BRANCH (UNIT V)│
+     │                               │                 │                               │
+     │  1. YOLOv8-Nano / Faster RCNN │                 │  1. Eigen SVD Rank Compression│
+     │     ├─ Locate LCD ROI (0.99)  │                 │     └─ Top 5 Modes = 97.8% Var│
+     │     └─ Detect Magnet / Seal   │                 │                               │
+     │                               │                 │  2. 2-Layer Deep LSTM         │
+     │  2. U-Net Semantic Seg Mask   │                 │     └─ 24h Load Forecasting   │
+     │     └─ Strip Specular Glare   │                 │                               │
+     │                               │                 │  3. Variational Autoencoder   │
+     │  3. ResNet-34 Digit Classifier│                 │     ├─ Latent Space z ∈ R²    │
+     │     └─ 7-Digit OCR (98.4% Acc)│                 │     └─ Recon MSE (τ = 0.085)  │
+     └───────────────┬───────────────┘                 └───────────────┬───────────────┘
+                     │                                                 │
+                     └────────────────────────┬────────────────────────┘
+                                              ▼
+                  ┌────────────────────────────────────────────────────────┐
+                  │     LATE-FUSION CLASSIFIER (UNITS I, II & III)         │
+                  │  40-Epoch Nesterov Accelerated Gradient (NAG) Sigmoid  │
+                  │  MLP + McCulloch-Pit
