@@ -78,7 +78,7 @@
       display: block;
       font-size: 12px;
       font-weight: 700;
-      margin: 10px 0 5px;
+      margin: 12px 0 5px;
     }
 
     .presets {
@@ -103,9 +103,7 @@
       color: #2563eb;
     }
 
-    input[type="text"],
-    input[type="file"],
-    select {
+    input[type="text"] {
       width: 100%;
       padding: 8px;
       border: 1px solid #cbd5e1;
@@ -143,7 +141,7 @@
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      margin-top: 12px;
+      margin-top: 16px;
     }
 
     .run:hover {
@@ -300,7 +298,7 @@
 
   <header>
     <div>
-      <h1>Automated Meter Reading &amp; Utility Fraud Detector</h1>
+      <h1>CSAI3027P Project 40: Automated Meter Reading &amp; Utility Fraud Detector</h1>
       <div class="sub">Multimodal Deep Learning: ResNet-34 OCR + YOLOv8 Tamper + 24h LSTM-VAE + Nesterov MLP</div>
     </div>
     <div style="font-family:Consolas,monospace; font-size:12px; text-align:right;">
@@ -316,7 +314,7 @@
         <h2><span>1. Meter &amp; Load Inputs</span><span id="status-pill"
             style="color:#d97706; font-size:12px;">Ready</span></h2>
 
-        <span class="lbl">Select Preset Scenario:</span>
+        <span class="lbl" style="margin-top:0;">Select Preset Scenario:</span>
         <div class="presets">
           <button type="button" id="b-normal" class="pbtn active" onclick="pickPreset('normal')">1. Normal Home</button>
           <button type="button" id="b-magnet" class="pbtn" onclick="pickPreset('magnet')">2. Magnet Tamper</button>
@@ -335,12 +333,8 @@
 
         <span class="lbl">Evening Peak Load (17:00-22:00): <b id="peak-val" style="color:#2563eb;">2.80 kWh</b></span>
         <input type="range" id="inp-peak" min="0.10" max="3.80" step="0.05" value="2.80" oninput="syncUI()">
-        <small style="color:#64748b; font-size:11px;">Drag left (&lt; 0.70 kWh) to simulate evening electricity theft /
-          flatline.</small>
-
-        <span class="lbl">Optional: Upload Cleaned Dataset CSV:</span>
-        <input type="file" id="csv-in" accept=".csv" onchange="readCSV(event)">
-        <select id="csv-sel" style="margin-top:6px; display:none;" onchange="pickCSVRow()"></select>
+        <small style="color:#64748b; font-size:11px; display:block;">Drag left (&lt; 0.70 kWh) to simulate evening
+          electricity theft / flatline.</small>
 
         <button type="button" id="run-btn" class="run" onclick="runPipeline()">▶ Run Live AI Analysis</button>
       </div>
@@ -436,7 +430,6 @@
   <script>
     var baseLoad = [0.8, 0.7, 0.6, 0.6, 0.7, 1.1, 1.8, 2.4, 2.1, 1.5, 1.3, 1.4, 1.5, 1.4, 1.3, 1.5, 2.0, 2.8, 3.2, 2.9, 2.2, 1.6, 1.1, 0.9];
     var curLoad = baseLoad.slice();
-    var csvRows = [];
     var runs = 0;
 
     function sig(z) { return 1 / (1 + Math.exp(-z)); }
@@ -546,7 +539,6 @@
           document.getElementById("st3").className = "step running";
           document.getElementById("run-lbl").innerText = "Stage 3/4: 24h LSTM-VAE...";
 
-          // LSTM + VAE Math
           var h = 0, c = 0, sq = 0;
           for (var t = 0; t < 24; t++) {
             var xt = curLoad[t] / 4;
@@ -566,7 +558,6 @@
             document.getElementById("st4").className = "step running";
             document.getElementById("run-lbl").innerText = "Stage 4/4: Nesterov MLP...";
 
-            // 40-Epoch Nesterov MLP
             var drop = Math.max(0, (2.8 - pk) / 2.8);
             var f = [Math.min(1, mse * 4.2), mag ? 1 : 0, seal ? 1 : 0, drop];
             var tgt = (f[0] > 0.35 || f[1] > 0.5 || f[2] > 0.5 || f[3] > 0.55) ? 0.96 : 0.03;
@@ -620,47 +611,6 @@
           }, 150);
         }, 150);
       }, 150);
-    }
-
-    function readCSV(e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      var r = new FileReader();
-      r.onload = function (ev) {
-        var raw = (ev.target.result || "").split(String.fromCharCode(13)).join("");
-        var lines = raw.trim().split(String.fromCharCode(10));
-        csvRows = [];
-        var sel = document.getElementById("csv-sel");
-        sel.innerHTML = "";
-        for (var i = 1; i < lines.length; i++) {
-          var cols = lines[i].split(",");
-          if (cols.length >= 31) {
-            var idx = csvRows.length;
-            csvRows.push(cols);
-            var opt = document.createElement("option");
-            opt.value = String(idx);
-            opt.innerText = cols[0] + " | " + cols[2] + " kWh | " + cols[5];
-            sel.appendChild(opt);
-          }
-        }
-        sel.style.display = "block";
-        pickCSVRow();
-      };
-      r.readAsText(file);
-    }
-
-    function pickCSVRow() {
-      var idx = parseInt(document.getElementById("csv-sel").value || "0", 10);
-      var r = csvRows[idx];
-      if (!r) return;
-      document.getElementById("inp-ocr").value = r[2];
-      document.getElementById("c-seal").checked = (r[3] === "1");
-      document.getElementById("c-mag").checked = (r[4] === "1");
-      curLoad = [];
-      for (var i = 7; i < 31; i++) curLoad.push(parseFloat(r[i]));
-      document.getElementById("inp-peak").value = String(curLoad[18] || 2.8);
-      document.getElementById("peak-val").innerText = Number(curLoad[18] || 2.8).toFixed(2) + " kWh";
-      plotLoad(false);
     }
 
     window.onload = function () { syncUI(); runPipeline(); };

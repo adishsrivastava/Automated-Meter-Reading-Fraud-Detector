@@ -3,6 +3,8 @@
 # ⚡ Automated Meter Reading (AMR) & Utility Fraud Detector
 ### Multimodal Deep Learning for Smart-Grid Optical Character Recognition & Non-Technical Loss Detection
 
+[![Course](https://img.shields.io/badge/Course-CSAI3027P_Deep_Learning-2563eb?style=for-the-badge)](https://github.com/adishsrivastava/Automated-Meter-Reading-Fraud-Detector-)
+[![Project](https://img.shields.io/badge/Project_40-Utility_Analytics-0f172a?style=for-the-badge)](https://github.com/adishsrivastava/Automated-Meter-Reading-Fraud-Detector-)
 [![C++17](https://img.shields.io/badge/C++17-LibTorch_%26_Eigen3-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)](https://pytorch.org/cppdocs/)
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel_Interactive_AI-16a34a?style=for-the-badge&logo=vercel&logoColor=white)](https://amr-fraud-detector-phi.vercel.app)
 
@@ -34,10 +36,10 @@ Our project solves both problems simultaneously using a **Dual-Branch Multimodal
 
 The web workbench is designed for **live interactive evaluation** during project demonstrations:
 * **4 Instant Preset Scenarios:** Toggle between **1. Normal Home**, **2. Magnet Tamper**, **3. Wire Bypass**, and **4. Surface Glare**—or customize any parameter manually.
-* **Custom Inputs & Real CSV Upload:** Type any 7-digit meter reading, toggle physical tamper artifacts, drag the **Evening Peak Load slider (`0.10 – 3.80 kWh`)**, or upload **`data/test_cleaned.csv`** to test any of the 75 held-out households.
+* **Interactive Parameter Controls:** Type any 7-digit meter reading, toggle physical tamper artifacts (Magnet, Broken Seal, Specular Glare), and drag the **Evening Peak Load slider (`0.10 – 3.80 kWh`)** to test custom scenarios.
 * **On-Demand 4-Stage Neural Execution:** Clicking **`▶ Run Live AI Analysis`** executes the 4-stage pipeline in real time:
   1. **Stage 1 (`YOLOv8-Nano`):** Computes physical tamper probability and bounding-box detection (`95.9% mAP@0.5`).
-  2. **Stage 2 (`U-Net + ResNet-34 OCR`):**Applies glare masking (`91.2% mIoU`) and decodes the 7-digit reading (`98.4% Exact Match`).
+  2. **Stage 2 (`U-Net + ResNet-34 OCR`):** Applies glare masking (`91.2% mIoU`) and decodes the 7-digit reading (`98.4% Exact Match`).
   3. **Stage 3 (`2-Layer LSTM + VAE`):** Runs a 24-timestep recurrent cell loop and computes the VAE reconstruction error ($\text{MSE}$ vs. threshold $\tau = 0.085$) and latent coordinates $z = [z_1, z_2]$.
   4. **Stage 4 (`40-Epoch Nesterov MLP`):** Executes 40 live epochs of backpropagation with Nesterov Accelerated Gradient (NAG), plots the Binary Cross-Entropy loss curve, verifies the finite-difference numerical gradient check ($\text{Rel Error} = 7.17 \times 10^{-10} < 10^{-7}$), and outputs the final **Fraud Probability** and **AI Prediction Accuracy**.
 
@@ -71,4 +73,10 @@ The web workbench is designed for **live interactive evaluation** during project
                   ┌────────────────────────────────────────────────────────┐
                   │     LATE-FUSION CLASSIFIER (UNITS I, II & III)         │
                   │  40-Epoch Nesterov Accelerated Gradient (NAG) Sigmoid  │
-                  │  MLP + McCulloch-Pit
+                  │  MLP + McCulloch-Pitts Logic Gate + Grad Check (<1e-7) │
+                  └───────────────────────────┬────────────────────────────┘
+                                              ▼
+                  ┌────────────────────────────────────────────────────────┐
+                  │   FINAL OUTPUT: Normal Operation vs. Fraud Alert       │
+                  │   (97.73% Overall Acc | 0.943 Fraud F1 | 14.2 ms SLA)  │
+                  └────────────────────────────────────────────────────────┘
