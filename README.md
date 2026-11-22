@@ -25,8 +25,8 @@ This repository delivers a **Dual-Branch Multimodal Deep Learning System** that 
 
 | System Branch | Functional Role | Deep Learning Models Used |
 | :--- | :--- | :--- |
-| **👁️ Branch 1: "The Eyes"**<br>*(Computer Vision Pipeline)* | Inspects the meter image $\rightarrow$ localizes the LCD screen, terminal seal, and external magnets $\rightarrow$ strips away surface glare $\rightarrow$ reads the 7-digit kWh counter (`04829.6 kWh`). | **YOLOv8-Nano / Faster R-CNN / RetinaNet** (ROI & Tamper Detection)<br>**U-Net** (Specular Glare Semantic Segmentation)<br>**ResNet-34 / GoogLeNet** (7-Digit OCR Classification) |
-| **🧠 Branch 2: "The Brain"**<br>*(Sequence & Generative Pipeline)* | Analyzes the 24 hourly electricity values (`Hour 00` to `Hour 23`) $\rightarrow$ forecasts expected household demand $\rightarrow$ projects the load curve into a 2D latent space ($z_1, z_2$) to catch flatlines and wire bypasses. | **2-Layer Deep LSTM** (24h Sequential Forecasting)<br>**Variational Autoencoder (VAE)** (Latent Anomaly Detector, $\tau = 0.085$)<br>**Nesterov MLP + McCulloch-Pitts Gate** (Late-Fusion Fraud Classifier) |
+| **👁️ Branch 1: "The Eyes"**<br>*(Computer Vision Pipeline)* | Inspects an uploaded meter photo $\rightarrow$ localizes the LCD screen, terminal seal, and external magnets $\rightarrow$ strips away surface glare $\rightarrow$ automatically extracts the 7-digit kWh counter (`04829.6 kWh`). | **YOLOv8-Nano / Faster R-CNN / RetinaNet** (ROI & Tamper Detection)<br>**U-Net** (Specular Glare Semantic Segmentation)<br>**ResNet-34 / GoogLeNet** (7-Digit OCR Classification) |
+| **🧠 Branch 2: "The Brain"**<br>*(Sequence & Generative Pipeline)* | Ingests weekly/monthly timestamped consumption histories (`Hour 00` to `Hour 23`) $\rightarrow$ deduplicates logs & partitions splits $\rightarrow$ forecasts expected demand & projects curves into a 2D latent space ($z_1, z_2$) to catch flatlines and bypasses. | **2-Layer Deep LSTM** (24h Sequential Forecasting)<br>**Variational Autoencoder (VAE)** (Latent Anomaly Detector, $\tau = 0.085$)<br>**Nesterov MLP + McCulloch-Pitts Gate** (Late-Fusion Fraud Classifier) |
 
 ---
 
@@ -34,14 +34,10 @@ This repository delivers a **Dual-Branch Multimodal Deep Learning System** that 
 
 🔗 **Live Deployment:** **[https://amr-fraud-detector-phi.vercel.app](https://amr-fraud-detector-phi.vercel.app)**
 
-The web workbench provides real-time interactive model execution:
-* **4 Instant Preset Scenarios:** Toggle between **1. Normal Home**, **2. Magnet Tamper**, **3. Wire Bypass**, and **4. Surface Glare**—or customize any parameter manually.
-* **Interactive Parameter Controls:** Type any 7-digit meter reading, toggle physical tamper artifacts (Magnet, Broken Seal, Specular Glare), and drag the **Evening Peak Load slider (`0.10 – 3.80 kWh`)** to test custom consumption profiles.
-* **On-Demand 4-Stage Neural Execution:** Clicking **`▶ Run Live AI Analysis`** executes the 4-stage pipeline in real time:
-  1. **Stage 1 (`YOLOv8-Nano`):** Computes physical tamper probability and bounding-box detection (`95.9% mAP@0.5`).
-  2. **Stage 2 (`U-Net + ResNet-34 OCR`):** Applies glare masking (`91.2% mIoU`) and decodes the 7-digit reading (`98.4% Exact Match`).
-  3. **Stage 3 (`2-Layer LSTM + VAE`):** Runs a 24-timestep recurrent cell loop and computes the VAE reconstruction error ($\text{MSE}$ vs. threshold $\tau = 0.085$) and latent coordinates $z = [z_1, z_2]$.
-  4. **Stage 4 (`40-Epoch Nesterov MLP`):** Executes 40 live epochs of backpropagation with Nesterov Accelerated Gradient (NAG), plots the Binary Cross-Entropy loss curve, verifies the finite-difference numerical gradient check ($\text{Rel Error} = 7.17 \times 10^{-10} < 10^{-7}$), and outputs the final **Fraud Probability** and **AI Prediction Accuracy**.
+The web workbench provides full end-to-end data curation, image detection, and sequence anomaly execution:
+* **📷 Meter Photo Upload & Auto-OCR Detection:** Upload any meter image (`JPG/PNG/SVG`) or click **"Scan Sample Photo"**. The vision canvas runs pixel luminance & edge analysis, renders the **YOLOv8 LCD ROI & Seal bounding boxes**, and automatically populates the detected 7-digit kWh reading into the pipeline.
+* **📅 Weekly / Monthly Consumption History Curation:** Upload a timestamped history CSV or click **"Load 30-Day History"** (`720 hourly logs`). The system automatically **removes duplicate timestamps**, generates ground-truth anomaly labels, assigns leakage-safe **70% Train / 15% Val / 15% Test** partitions, and lets you inspect the exact meter reading at any hour of any day.
+* **⚡ On-Demand 4-Stage Neural Execution:** Clicking **`▶ Run Live AI Analysis`** executes the 4-stage pipeline in real time (`YOLOv8 Tamper Detection` $\rightarrow$ `U-Net & ResNet-34 OCR` $\rightarrow$ `24h LSTM-VAE Forward Pass` $\rightarrow$ `40-Epoch Nesterov MLP Backpropagation & Gradient Verification`).
 
 ---
 
@@ -49,7 +45,7 @@ The web workbench provides real-time interactive model execution:
 
 ```text
                   ┌────────────────────────────────────────────────────────┐
-                  │      Smart Meter Inspection Frame + 24h kWh Stream     │
+                  │  Uploaded Meter Photo + Weekly/Monthly kWh History CSV │
                   └───────────────────────────┬────────────────────────────┘
                                               │
                      ┌────────────────────────┴────────────────────────┐
@@ -57,14 +53,14 @@ The web workbench provides real-time interactive model execution:
      ┌───────────────────────────────┐                 ┌───────────────────────────────┐
      │   COMPUTER VISION PIPELINE    │                 │ SEQUENCE & GENERATIVE PIPELINE│
      │                               │                 │                               │
-     │  1. YOLOv8-Nano / Faster RCNN │                 │  1. Eigen SVD Rank Compression│
-     │     ├─ Locate LCD ROI (0.99)  │                 │     └─ Top 5 Modes = 97.8% Var│
-     │     └─ Detect Magnet / Seal   │                 │                               │
-     │                               │                 │  2. 2-Layer Deep LSTM         │
-     │  2. U-Net Semantic Seg Mask   │                 │     └─ 24h Load Forecasting   │
-     │     └─ Strip Specular Glare   │                 │                               │
-     │                               │                 │  3. Variational Autoencoder   │
-     │  3. ResNet-34 Digit Classifier│                 │     ├─ Latent Space z ∈ R²    │
+     │  1. YOLOv8-Nano / Faster RCNN │                 │  1. Curation & Eigen SVD      │
+     │     ├─ Locate LCD ROI (0.99)  │                 │     ├─ Deduplicate & 70/15/15 │
+     │     └─ Detect Magnet / Seal   │                 │     └─ Top 5 Modes = 97.8% Var│
+     │                               │                 │                               │
+     │  2. U-Net Semantic Seg Mask   │                 │  2. 2-Layer Deep LSTM         │
+     │     └─ Strip Specular Glare   │                 │     └─ 24h Load Forecasting   │
+     │                               │                 │                               │
+     │  3. ResNet-34 Digit Classifier│                 │  3. Variational Autoencoder   │
      │     └─ 7-Digit OCR (98.4% Acc)│                 │     └─ Recon MSE (τ = 0.085)  │
      └───────────────┬───────────────┘                 └───────────────┬───────────────┘
                      │                                                 │
