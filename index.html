@@ -35,7 +35,7 @@
 
     header {
       background: #0f172a;
-      color: #fff;
+      color: #ffffff;
       padding: 16px 28px;
       border-bottom: 3px solid var(--primary);
       display: flex;
@@ -76,7 +76,7 @@
 
     .grid-main {
       display: grid;
-      grid-template-columns: 380px 1fr;
+      grid-template-columns: 390px 1fr;
       gap: 22px;
       align-items: start;
     }
@@ -120,25 +120,27 @@
       margin-bottom: 16px;
     }
 
-    button {
-      padding: 9px 12px;
+    .preset-btn {
+      padding: 10px 12px;
       border-radius: 8px;
-      border: 1px solid #cbd5e1;
+      border: 2px solid #cbd5e1;
       background: #f8fafc;
-      font-weight: 600;
+      color: var(--text);
+      font-weight: 700;
       font-size: 12.5px;
       cursor: pointer;
       transition: all 0.15s;
     }
 
-    button:hover {
+    .preset-btn:hover {
       background: #e2e8f0;
     }
 
-    button.preset-active {
+    .preset-btn.active {
       background: #eff6ff;
       border-color: var(--primary);
       color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
     }
 
     .field-group {
@@ -154,7 +156,7 @@
       border-radius: 8px;
       font-size: 14px;
       font-family: inherit;
-      background: #fff;
+      background: #ffffff;
     }
 
     .toggles {
@@ -187,7 +189,7 @@
       width: 100%;
       padding: 14px;
       background: var(--primary);
-      color: #fff;
+      color: #ffffff;
       border: none;
       border-radius: 10px;
       font-size: 15px;
@@ -195,6 +197,7 @@
       cursor: pointer;
       margin-top: 8px;
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      transition: background 0.15s;
     }
 
     .run-btn:hover {
@@ -230,7 +233,7 @@
       background: #eff6ff;
       border-color: var(--primary);
       color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
     }
 
     .p-step.done {
@@ -246,21 +249,21 @@
       font-size: 15px;
       text-align: center;
       margin-bottom: 14px;
-      border: 2px solid #cbd5e1;
+      border: 2px dashed #94a3b8;
       background: #f8fafc;
-      color: var(--text);
+      color: var(--muted);
     }
 
     .verdict-ok {
       background: #dcfce7;
       color: #166534;
-      border-color: #22c55e;
+      border: 2px solid #22c55e;
     }
 
     .verdict-fraud {
       background: #fee2e2;
       color: #991b1b;
-      border-color: #ef4444;
+      border: 2px solid #ef4444;
     }
 
     .kpi-grid {
@@ -323,6 +326,7 @@
       font-family: Consolas, monospace;
       line-height: 1.5;
       overflow-x: auto;
+      white-space: pre-wrap;
     }
 
     details {
@@ -379,43 +383,47 @@
   <div class="container">
     <div class="grid-main">
 
-      <!-- LEFT CARD: CLEAN PARAMETER SETUP (NO CAMERA BOX) -->
+      <!-- LEFT CARD: CLEAN PARAMETER SETUP -->
       <div class="card">
         <h2>
           <span>1. Meter &amp; Load Inputs</span>
-          <span id="pending-badge" style="font-size:12px; color:var(--success); font-weight:700;">● Ready</span>
+          <span id="pending-badge" style="font-size:12px; color:#d97706; font-weight:700;">Ready - Click Run AI</span>
         </h2>
 
         <span class="step-label">Select a Preset Scenario (or customize below):</span>
         <div class="preset-row">
-          <button type="button" id="btn-normal" class="preset-active" onclick="setScenario('normal')">1. Normal
+          <button type="button" id="btn-normal" class="preset-btn active" onclick="selectPreset('normal')">1. Normal
             Home</button>
-          <button type="button" id="btn-magnet" onclick="setScenario('magnet')">2. Magnet Tamper</button>
-          <button type="button" id="btn-bypass" onclick="setScenario('bypass')">3. Wire Bypass</button>
-          <button type="button" id="btn-glare" onclick="setScenario('glare')">4. Surface Glare</button>
+          <button type="button" id="btn-magnet" class="preset-btn" onclick="selectPreset('magnet')">2. Magnet
+            Tamper</button>
+          <button type="button" id="btn-bypass" class="preset-btn" onclick="selectPreset('bypass')">3. Wire
+            Bypass</button>
+          <button type="button" id="btn-glare" class="preset-btn" onclick="selectPreset('glare')">4. Surface
+            Glare</button>
         </div>
 
         <div class="field-group">
           <span class="step-label">Meter Reading Value (7-Digit OCR Input):</span>
-          <input type="text" id="inp-digits" value="04829.6" maxlength="8" oninput="onInputChanged()" />
+          <input type="text" id="inp-digits" value="04829.6" maxlength="8" oninput="markInputsChanged()" />
         </div>
 
         <div class="field-group">
           <span class="step-label">Physical Meter Conditions (YOLOv8 &amp; U-Net):</span>
           <div class="toggles">
-            <label><input type="checkbox" id="chk-magnet" onchange="onInputChanged()" /> Neodymium Magnet
+            <label><input type="checkbox" id="chk-magnet" onchange="markInputsChanged()" /> Neodymium Magnet
               Attached</label>
-            <label><input type="checkbox" id="chk-seal" onchange="onInputChanged()" /> Terminal Security Seal
+            <label><input type="checkbox" id="chk-seal" onchange="markInputsChanged()" /> Terminal Security Seal
               Broken</label>
-            <label><input type="checkbox" id="chk-glare" onchange="onInputChanged()" /> Specular Surface Glare
+            <label><input type="checkbox" id="chk-glare" onchange="markInputsChanged()" /> Specular Surface Glare
               Present</label>
           </div>
         </div>
 
         <div class="field-group">
-          <span class="step-label">Evening Peak Load (17:00–22:00): <strong id="lbl-peak"
+          <span class="step-label">Evening Peak Load (17:00-22:00): <strong id="lbl-peak"
               style="color:var(--primary);">2.80 kWh</strong></span>
-          <input type="range" id="inp-peak" min="0.10" max="3.80" step="0.05" value="2.80" oninput="onInputChanged()" />
+          <input type="range" id="inp-peak" min="0.10" max="3.80" step="0.05" value="2.80"
+            oninput="markInputsChanged()" />
           <div style="font-size:11.5px; color:var(--muted);">
             Drag left (&lt; 0.70 kWh) to simulate electricity theft / flatline during peak evening hours.
           </div>
@@ -423,12 +431,12 @@
 
         <div class="field-group">
           <span class="step-label">Optional: Load Household from Cleaned CSV:</span>
-          <input type="file" id="csv-file" accept=".csv" onchange="handleCSVUpload(event)" />
-          <select id="csv-row-select" style="margin-top:6px; display:none;" onchange="loadSelectedCSVRow()"></select>
+          <input type="file" id="csv-file" accept=".csv" onchange="uploadCSVFile(event)" />
+          <select id="csv-row-select" style="margin-top:6px; display:none;" onchange="applyCSVRow()"></select>
         </div>
 
-        <button type="button" id="run-btn" class="run-btn" onclick="executeNeuralPipeline()">
-          ▶ Run Live AI Analysis
+        <button type="button" id="run-btn" class="run-btn" onclick="startLiveAIAnalysis()">
+          Run Live AI Analysis
         </button>
       </div>
 
@@ -436,7 +444,8 @@
       <div class="card">
         <h2>
           <span>2. Live Neural Network Execution &amp; Prediction Output</span>
-          <span id="exec-status" style="font-size:12px; color:var(--primary); font-weight:700;">Idle</span>
+          <span id="exec-status" style="font-size:12px; color:var(--primary); font-weight:700;">Waiting for
+            Run...</span>
         </h2>
 
         <div class="pipeline-steps">
@@ -447,33 +456,33 @@
         </div>
 
         <div id="verdict-box" class="verdict-box">
-          Click "▶ Run Live AI Analysis" to execute the models on your inputs.
+          Configure inputs on the left and click "Run Live AI Analysis" to execute the neural models.
         </div>
 
         <div class="kpi-grid">
           <div class="kpi">
             <div class="lbl">ResNet-34 OCR Reading</div>
-            <div class="val" id="kpi-ocr">04829.6 kWh</div>
+            <div class="val" id="kpi-ocr">--</div>
           </div>
           <div class="kpi">
             <div class="lbl">OCR Model Accuracy</div>
-            <div class="val" id="kpi-ocr-acc">98.4% (Exact)</div>
+            <div class="val" id="kpi-ocr-acc">--</div>
           </div>
           <div class="kpi">
             <div class="lbl">YOLOv8 Tamper &amp; mAP</div>
-            <div class="val" id="kpi-yolo">0.06 (95.9% mAP)</div>
+            <div class="val" id="kpi-yolo">--</div>
           </div>
           <div class="kpi">
             <div class="lbl">LSTM-VAE Recon Loss</div>
-            <div class="val" id="kpi-vae">0.012 (Normal)</div>
+            <div class="val" id="kpi-vae">--</div>
           </div>
           <div class="kpi">
             <div class="lbl">AI Prediction Accuracy</div>
-            <div class="val" id="kpi-conf" style="color:var(--primary);">97.8% Conf</div>
+            <div class="val" id="kpi-conf" style="color:var(--primary);">--</div>
           </div>
           <div class="kpi">
             <div class="lbl">Benchmark Fraud F1</div>
-            <div class="val" id="kpi-f1">0.943 F1 | 14.2 ms</div>
+            <div class="val" id="kpi-f1">--</div>
           </div>
         </div>
 
@@ -489,14 +498,15 @@
         </div>
 
         <span class="step-label">Live Neural Execution &amp; Mathematical Verification Log:</span>
-        <pre id="ai-console">Ready.</pre>
+        <pre
+          id="ai-console">[System Ready] Select a preset or adjust parameters on the left, then click "Run Live AI Analysis" to run the 4-stage neural network pipeline.</pre>
       </div>
 
     </div>
 
     <!-- COLLAPSIBLE SYLLABUS PROOF DRAWER -->
     <details>
-      <summary>🎓 View Full CSAI3027P Syllabus Mathematical Proofs, SVD, Bio-Learning &amp; Model Benchmarks (Units I–V)
+      <summary>View Full CSAI3027P Syllabus Mathematical Proofs, SVD, Bio-Learning &amp; Model Benchmarks (Units I-V)
       </summary>
       <div style="margin-top:14px;">
         <table>
@@ -512,7 +522,7 @@
           <tbody>
             <tr>
               <td><strong>Unit I</strong> (Foundations)</td>
-              <td>McCulloch-Pitts Gate, 2-Layer Sigmoid MLP, Batch GD, SGD, Momentum ($\beta=0.9$), <strong>Nesterov
+              <td>McCulloch-Pitts Gate, 2-Layer Sigmoid MLP, Batch GD, SGD, Momentum (0.9), <strong>Nesterov
                   (NAG)</strong>, SVD</td>
               <td>Cleaned Smart-Grid CSV (500 meters)</td>
               <td><strong>NAG Loss: 0.0189</strong> (31 epochs)<br>Top 5 SVD modes = <strong>97.8% var</strong></td>
@@ -523,15 +533,15 @@
               <td>4D-to-2D Reshaping, Bias Broadcasting, Inner Products, <strong>Finite-Difference Gradient
                   Check</strong></td>
               <td>24x64 Load Tensor</td>
-              <td><strong>Rel Grad Error: 7.17e-10</strong> (&lt; $10^{-7}$)</td>
-              <td>PASSED (`unit_tests.cpp`)</td>
+              <td><strong>Rel Grad Error: 7.17e-10</strong> (&lt; 1e-7)</td>
+              <td>PASSED (unit_tests.cpp)</td>
             </tr>
             <tr>
               <td><strong>Unit III</strong> (Learning Rules)</td>
               <td>Oja Modified Hebbian, Winner-Take-All (WTA) Competitive, Boltzmann RBM (CD-1), BatchNorm + Dropout
-                ($0.3$) + L2</td>
+                (0.3) + L2</td>
               <td>UFPR-AMR + Load Profiles</td>
-              <td><strong>Val Acc: 96.1%</strong><br>Overfit Gap: 12.7% $\rightarrow$ <strong>0.8%</strong></td>
+              <td><strong>Val Acc: 96.1%</strong><br>Overfit Gap: 12.7% to <strong>0.8%</strong></td>
               <td>RBM MSE: 0.024</td>
             </tr>
             <tr>
@@ -545,8 +555,8 @@
             </tr>
             <tr>
               <td><strong>Unit V</strong> (Seq &amp; Gen)</td>
-              <td>Step vs. Sigmoid vs. Tanh, <strong>2-Layer Deep LSTM</strong>, <strong>Variational Autoencoder (VAE $z
-                  \in \mathbb{R}^2$)</strong></td>
+              <td>Step vs. Sigmoid vs. Tanh, <strong>2-Layer Deep LSTM</strong>, <strong>Variational Autoencoder (VAE 2D
+                  Latent Space)</strong></td>
               <td>SGCC Theft &amp; UCI 24h Load</td>
               <td><strong>Fraud F1: 0.943</strong> | <strong>ROC-AUC: 96.7%</strong><br>Overall Test Acc:
                 <strong>97.73%</strong></td>
@@ -568,11 +578,15 @@
       return 1.0 / (1.0 + Math.exp(-z));
     }
 
-    function setScenario(type) {
+    function selectPreset(type) {
       var ids = ["normal", "magnet", "bypass", "glare"];
       for (var i = 0; i < ids.length; i++) {
-        document.getElementById("btn-" + ids[i]).className = (ids[i] === type) ? "preset-active" : "";
+        var btn = document.getElementById("btn-" + ids[i]);
+        if (btn) {
+          btn.className = (ids[i] === type) ? "preset-btn active" : "preset-btn";
+        }
       }
+
       var digits = document.getElementById("inp-digits");
       var mag = document.getElementById("chk-magnet");
       var seal = document.getElementById("chk-seal");
@@ -580,18 +594,34 @@
       var peak = document.getElementById("inp-peak");
 
       if (type === "normal") {
-        digits.value = "04829.6"; mag.checked = false; seal.checked = false; glare.checked = false; peak.value = "2.80";
+        digits.value = "04829.6";
+        mag.checked = false;
+        seal.checked = false;
+        glare.checked = false;
+        peak.value = "2.80";
       } else if (type === "magnet") {
-        digits.value = "04829.6"; mag.checked = true; seal.checked = false; glare.checked = false; peak.value = "0.15";
+        digits.value = "04829.6";
+        mag.checked = true;
+        seal.checked = false;
+        glare.checked = false;
+        peak.value = "0.15";
       } else if (type === "bypass") {
-        digits.value = "01904.2"; mag.checked = false; seal.checked = true; glare.checked = false; peak.value = "0.45";
+        digits.value = "01904.2";
+        mag.checked = false;
+        seal.checked = true;
+        glare.checked = false;
+        peak.value = "0.45";
       } else if (type === "glare") {
-        digits.value = "07315.8"; mag.checked = false; seal.checked = false; glare.checked = true; peak.value = "2.75";
+        digits.value = "07315.8";
+        mag.checked = false;
+        seal.checked = false;
+        glare.checked = true;
+        peak.value = "2.75";
       }
-      onInputChanged();
+      markInputsChanged();
     }
 
-    function onInputChanged() {
+    function markInputsChanged() {
       var pk = parseFloat(document.getElementById("inp-peak").value || "2.80");
       document.getElementById("lbl-peak").innerText = pk.toFixed(2) + " kWh";
       var sealBroken = document.getElementById("chk-seal").checked;
@@ -609,17 +639,28 @@
       }
 
       var badge = document.getElementById("pending-badge");
-      badge.innerText = "● Inputs Changed (Click Run AI)";
+      badge.innerText = "Inputs Changed - Click Run AI";
       badge.style.color = "#d97706";
+      drawPreviewCharts();
     }
 
-    function runLSTMAndVAE(seq24) {
+    function drawPreviewCharts() {
+      drawLoadChart(false);
+      var c = document.getElementById("lossCanvas");
+      var ctx = c.getContext("2d");
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "11px Consolas, monospace";
+      ctx.fillText("Click 'Run Live AI Analysis' to train", 42, 82);
+      ctx.fillText("40-Epoch Nesterov MLP & plot BCE loss", 42, 100);
+    }
+
+    function computeLSTMAndVAE(seq24) {
       var h = 0.0;
       var c = 0.0;
       var sqErr = 0.0;
       for (var t = 0; t < 24; t++) {
         var x_t = seq24[t] / 4.0;
-        var exp_t = expectedLoad[t] / 4.0;
         var f_t = sigmoid(1.2 * x_t + 0.8 * h - 0.2);
         var i_t = sigmoid(1.4 * x_t + 0.7 * h - 0.1);
         var c_tilde = Math.tanh(1.1 * x_t + 0.5 * h);
@@ -635,7 +676,7 @@
       return { mse: mse, z1: z1, z2: z2 };
     }
 
-    function runNesterovMLP(features4) {
+    function computeNesterovMLP(features4) {
       var isTargetFraud = (features4[0] > 0.35 || features4[1] > 0.5 || features4[2] > 0.5 || features4[3] > 0.55);
       var target = isTargetFraud ? 0.96 : 0.03;
       var w = [0.65, 1.10, 0.95, 0.85];
@@ -646,7 +687,7 @@
       var mom = 0.85;
       var lossHistory = [];
 
-      var eps = 1e-5;
+      var eps = 0.00001;
       function calcL(w0_val) {
         var z = w0_val * features4[0] + w[1] * features4[1] + w[2] * features4[2] + w[3] * features4[3] + b;
         var a = sigmoid(z);
@@ -670,7 +711,7 @@
         var z = b_look + w_look[0] * features4[0] + w_look[1] * features4[1] + w_look[2] * features4[2] + w_look[3] * features4[3];
         var pred = sigmoid(z);
         finalPred = pred;
-        var bce = -(target * Math.log(pred + 1e-9) + (1.0 - target) * Math.log(1.0 - pred + 1e-9));
+        var bce = -(target * Math.log(pred + 0.000000001) + (1.0 - target) * Math.log(1.0 - pred + 0.000000001));
         lossHistory.push(bce);
 
         var dz = pred - target;
@@ -686,56 +727,4 @@
       return {
         fraudProb: Number((finalPred * 100.0).toFixed(1)),
         lossHistory: lossHistory,
-        finalLoss: Number(lossHistory[lossHistory.length - 1].toFixed(4)),
-        gradErr: gradErr.toExponential(2)
-      };
-    }
-
-    function drawLoadChart(isFraud) {
-      var c = document.getElementById("loadCanvas");
-      var ctx = c.getContext("2d");
-      ctx.clearRect(0, 0, c.width, c.height);
-      var padL = 32, padR = 12, padT = 24, padB = 20;
-      var w = c.width - padL - padR;
-      var h = c.height - padT - padB;
-
-      ctx.strokeStyle = "#1e293b";
-      ctx.lineWidth = 1;
-      for (var i = 0; i <= 4; i++) {
-        var y = padT + (h / 4) * i;
-        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + w, y); ctx.stroke();
-        ctx.fillStyle = "#94a3b8";
-        ctx.font = "10px Consolas, monospace";
-        ctx.fillText((4 - i) + "kW", 4, y + 3);
-      }
-
-      ctx.strokeStyle = "#38bdf8";
-      ctx.lineWidth = 2.2;
-      ctx.beginPath();
-      for (var t = 0; t < 24; t++) {
-        var x1 = padL + (w / 23) * t;
-        var y1 = padT + h - (expectedLoad[t] / 4.0) * h;
-        if (t === 0) ctx.moveTo(x1, y1); else ctx.lineTo(x1, y1);
-      }
-      ctx.stroke();
-
-      ctx.strokeStyle = isFraud ? "#ef4444" : "#22c55e";
-      ctx.lineWidth = 2.4;
-      ctx.beginPath();
-      for (var k = 0; k < 24; k++) {
-        var x2 = padL + (w / 23) * k;
-        var y2 = padT + h - (actualLoad[k] / 4.0) * h;
-        if (k === 0) ctx.moveTo(x2, y2); else ctx.lineTo(x2, y2);
-      }
-      ctx.stroke();
-
-      ctx.fillStyle = "#38bdf8"; ctx.fillText("── LSTM Forecast", padL, 14);
-      ctx.fillStyle = isFraud ? "#ef4444" : "#22c55e"; ctx.fillText("── Actual Load", padL + 125, 14);
-    }
-
-    function drawLossChart(lossHistory) {
-      var c = document.getElementById("lossCanvas");
-      var ctx = c.getContext("2d");
-      ctx.clearRect(0, 0, c.width, c.height);
-      var padL = 32, padR = 12, padT = 24, padB = 20;
-      var w = c.width - padL -
+        finalLoss: Number(lossHistory[lossHistor
