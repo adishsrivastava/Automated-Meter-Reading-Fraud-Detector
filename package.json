@@ -1,0 +1,10 @@
+﻿{
+  "name": "csai3027p-project40-amr-fraud-detector",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CSAI3027P Deep Learning Project 40: Automated Meter Reading & Utility Fraud Detector",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo Static Vercel build complete"
+  }
+}

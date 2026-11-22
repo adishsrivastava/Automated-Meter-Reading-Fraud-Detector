@@ -1,0 +1,3 @@
+﻿@echo off
+echo Launching Project 40 Interactive Web App...
+start "" "%~dp0index.html"
